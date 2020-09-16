@@ -163,3 +163,89 @@ _**Note :-**_ Template auto type deduction doesn't work for default call argumen
     print(80); //OK: T yields to int
     print(); //OK: T yields to std::string
 ```
+## 1.3 Multiple Template Parameters
+
+ ```C++
+
+    template <typename T> // T is template parameter
+    T max(T x, T y){     // x & y are call parameters 
+        return ( x < y ? y : x );
+    }
+
+ ```
+
+ In above example there are two distinct sets of parameters.
+
+ * Template Parameter - one in angled bracket<>
+ * Call Parameter - one in paranthesis
+
+ You may have as many template parameters as you want.
+ e.g.
+
+ ```C++
+    template <typename T1, typename T2>
+    T max(T1 x, T2 b){
+        return ( x < y ? y : x );
+    }
+ 
+ 
+ ...
+
+ auto x = max(43,98.56); //First arguments decides the return type.
+ ```
+
+ So, return type T would be int if we take above example. So, order of call argument matters a lot.
+
+ If first call argument is double then return type T would be double.
+
+ There are actually multiple ways to fix the deduction problem like explicitly specifying the template argument etc. But it makes code so tedious.
+ I would like to keep it simple.
+
+ ```C++
+    template<typename ReturnType, typename T1, typename T2>
+    ReturnType max(T1 x, T2 y){
+        return ( x < y ? y : x );    
+    }
+
+    ...
+    ...
+
+    auto i = max<double>(14,20.56);
+    // OK: return type is double so T1 and T2 are deduced as int and double.
+
+ ``` 
+Remember the rule we just checked? Always first call argument decides the return type. But wait can I simplify it further ? 
+Yes!! the simplest solution since C++14 is to use auto in place of ReturnType.
+
+```C++
+    template<typename T1, typename T2>
+    auto max(T1 x, T2 y) -> decltype(x < y ? y : x) 
+    {
+        return (x < y ? y : x);
+    }
+
+    ...
+
+    auto i = max(14,78.45); // Return type yields double
+```
+
+In this example the return type yields from ?: operator. Out an out there are more ways to avoid the decaying of data types but it's better to go with following approach :
+
+```C++
+    template<typename T1, typename T2>
+    auto max(T1 x, T2 y)
+    {
+        return (x < y ? y : x);
+    }
+
+    ...
+
+    auto i = max(14,78.45); // Return type yields double
+```
+## Some Random Notes
+
+* With templates, always prefer to use _**pass by value**_ to declare functions instead using _**pass by reference**_. This could actually signiicantly kill your performance.
+
+* Compilers are smart you don't need to make the template function _**inline**_. This may also result in inefficient coding in some cases and mostly it doesn't make any sense.
+
+* Making templates _**constexpr**_ could be a smart move.
