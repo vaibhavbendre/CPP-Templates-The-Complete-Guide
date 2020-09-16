@@ -244,7 +244,7 @@ In this example the return type yields from ?: operator. Out an out there are mo
 ```
 ## Some Random Notes
 
-* With templates, always prefer to use _**pass by value**_ to declare functions instead using _**pass by reference**_. This could actually signiicantly kill your performance.
+* With templates, always prefer to use _**pass by value**_ to declare functions instead of using _**pass by reference**_. This could significantly kill your performance.
 
 * Compilers are smart you don't need to make the template function _**inline**_. This may also result in inefficient coding in some cases and mostly it doesn't make any sense.
 
